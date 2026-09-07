@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="An interactive Reading Dossier for How to Have a More Productive Day.">
+<title>How to Have a More Productive Day — Reading Dossier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1E2E3E;--paper:#FBF5E8;--gold:#C69728;--ink:#332D25;--rust:#9D4939;--muted:#786E61;--line:#CBBFA9;--blue:#365E72;--soft:#F0E4C9;--good:#2F6B4F;--bad:#A13D35}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--navy);color:var(--ink);font-family:Georgia,"Times New Roman",serif;font-size:17px;line-height:1.75}
+button,select,input{font:inherit}button{color:inherit}.app{width:min(1120px,calc(100% - 28px));margin:22px auto 46px;background:var(--paper);border:1px solid #d5c9b2;border-radius:14px;box-shadow:0 16px 48px #0c1722aa;overflow:hidden;position:relative}.app:before{content:"";position:absolute;left:0;top:34px;width:7px;height:88px;background:var(--rust)}
+.mast{padding:24px 30px 14px;border-bottom:1px dashed var(--line)}.fileline,.label,.tabs button,.controls button,.controls select,.small-btn,.practice-tabs button,.counter,.eyebrow,.status,.summary-title{font-family:"Courier Prime","Courier New",monospace}.fileline{color:var(--rust);font-size:.82rem;letter-spacing:.13em;font-weight:700}.mast h1{font-family:"Courier Prime","Courier New",monospace;line-height:1.1;font-size:clamp(1.7rem,4vw,2.7rem);margin:.35rem 0 .2rem}.rule{height:3px;width:84px;background:var(--gold);margin-top:12px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);padding:14px 20px 0;gap:8px}.tabs button,.practice-tabs button{border:1px dashed #aa9c83;background:#f5ecd9;padding:10px 8px;cursor:pointer;border-radius:7px;font-size:.88rem;font-weight:700}.tabs button[aria-selected=true],.practice-tabs button[aria-selected=true]{background:var(--ink);color:var(--paper);border-style:solid}
+.mode{display:none;padding:22px 30px 34px}.mode.active{display:block}.mode-head{display:flex;justify-content:space-between;gap:16px;align-items:end;margin-bottom:16px}.mode-head h2{margin:0;font:700 1.15rem/1.2 "Courier Prime","Courier New",monospace;letter-spacing:.06em}.mode-head p{margin:0;color:var(--muted);font-size:.9rem}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#f3ead7;border:1px dashed var(--line);border-radius:9px;padding:11px;margin-bottom:18px}.controls button,.controls select,.small-btn{border:1px solid #9c8e76;background:#fffaf0;border-radius:6px;padding:7px 11px;cursor:pointer;font-size:.88rem}.controls button:hover,.small-btn:hover{border-color:var(--gold)}.controls button:focus-visible,.tabs button:focus-visible,.term:focus-visible,.tile:focus-visible,.blank:focus-visible{outline:3px solid #d7ad4e;outline-offset:2px}.seek{flex:1 1 220px;accent-color:var(--rust)}.time{min-width:92px;font:700 .78rem "Courier Prime","Courier New",monospace}.toggle{display:inline-flex;gap:6px;align-items:center;font:700 .8rem "Courier Prime","Courier New",monospace;white-space:nowrap}.toggle input{accent-color:var(--rust)}
+.audio-note{min-height:1.5em;color:var(--rust);font:700 .8rem "Courier Prime","Courier New",monospace}.reading{font-size:clamp(1.08rem,2.1vw,1.28rem);line-height:1.95}.reading-title{font:700 clamp(1.35rem,3vw,2rem)/1.3 "Courier Prime","Courier New",monospace;margin:3px 0 18px;color:#253f50}.reading p{margin:0}.sentence{scroll-margin:150px}.phrase{border-radius:4px;cursor:pointer;transition:background .12s}.phrase:hover{background:#eddfbd}.phrase.active{background:#ead49a}.word.active{background:var(--rust);color:#fff;border-radius:3px;padding:1px 0}.word{transition:background .08s,color .08s}
+.term{font-family:inherit;font-size:inherit;line-height:inherit;display:inline;border:0;border-bottom:2px solid var(--gold);background:#f2e3b7;padding:1px 2px;margin:0;cursor:pointer;border-radius:3px}.term:hover,.term:focus{background:#e7cd80}.glossary{margin-top:24px;border-top:1px dashed var(--line);padding-top:15px}.glossary summary{cursor:pointer;font:700 .9rem "Courier Prime","Courier New",monospace;color:#294a5d}.vocab-grid{display:grid;grid-template-columns:1.1fr .85fr 1fr 1.7fr auto;margin-top:12px;border:1px solid var(--line);font-size:.88rem;line-height:1.45}.vocab-grid>div{padding:9px;border-bottom:1px solid #ded4c1}.vocab-grid>div:nth-last-child(-n+5){border-bottom:0}.vocab-grid .vh{font:700 .75rem "Courier Prime","Courier New",monospace;background:#eee2c9}.vocab-grid .vi{color:var(--rust)}
+.popover{position:fixed;z-index:50;width:min(380px,calc(100vw - 24px));max-height:min(440px,calc(100vh - 24px));overflow:auto;background:#fffaf0;border:1px solid #8f8069;border-top:5px solid var(--gold);border-radius:9px;box-shadow:0 14px 36px #13202d55;padding:16px;display:none}.popover.open{display:block}.pop-close{float:right;border:0;background:transparent;font:700 1rem "Courier Prime","Courier New",monospace;cursor:pointer}.popover h3{font:700 1.2rem "Courier Prime","Courier New",monospace;margin:0 28px 2px 0}.ipa{color:var(--blue);font-family:"Courier Prime","Courier New",monospace}.pop-vi{color:var(--rust);font-weight:700;margin:.5rem 0}.pop-en{margin:.25rem 0 .8rem}.popover .small-btn{background:var(--ink);color:var(--paper)}
+.bi-tools{margin-bottom:14px}.bi-row{padding:14px 0;border-bottom:1px dashed var(--line)}.bi-en{font-size:1.12rem}.bi-vi{color:#8A4438;margin-top:3px}.bi-row.hide-vi .bi-vi{display:none}.pair{border-radius:3px;background:#f0d78d;padding:1px 2px;transition:box-shadow .12s,background .12s}.pair.on{background:#d8b34e;box-shadow:0 0 0 2px #d8b34e55}.listen-sentence{margin-top:7px}
+.practice-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}.counter{font-weight:700;color:var(--good)}.practice-tabs{display:flex;gap:8px}.practice-panel{display:none}.practice-panel.active{display:block}.card{border:1px solid var(--line);border-radius:9px;padding:18px;background:#fffaf0}.eyebrow{color:var(--rust);font-size:.8rem;font-weight:700}.hint{font-size:1.02rem;color:#864336;margin:9px 0 14px}.bank,.answer-line{display:flex;flex-wrap:wrap;gap:8px;min-height:54px;padding:10px;border:1px dashed #a89a83;border-radius:7px;margin:9px 0}.answer-line{background:#f2ead9}.tile{border:1px solid #8e8069;background:#fff;padding:7px 10px;border-radius:6px;cursor:pointer}.tile.used{opacity:.35}.answer-line .tile{background:#e7d8b8}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.actions button{border:1px solid #8e8069;background:#fffaf0;border-radius:6px;padding:7px 11px;cursor:pointer;font:700 .82rem "Courier Prime","Courier New",monospace}.actions .primary{background:var(--ink);color:var(--paper)}.feedback{min-height:1.6em;margin-top:9px;font-weight:700}.feedback.good{color:var(--good)}.feedback.bad{color:var(--bad)}
+.setnav{display:flex;gap:6px;margin-bottom:10px}.setnav button{border:1px solid #a99b84;background:#f5ecd9;border-radius:50%;width:35px;height:35px;cursor:pointer;font-family:"Courier Prime","Courier New",monospace}.setnav button.active{background:var(--ink);color:#fff}.gap-text{line-height:2.15}.gap-text p{margin:.55rem 0}.blank{display:inline-block;min-width:116px;max-width:100%;border:1px dashed var(--rust);border-radius:5px;background:#f5e7d0;padding:0 7px;cursor:pointer;color:#694238;vertical-align:baseline}.blank.selected{outline:3px solid #d7ad4e}.blank.correct{background:#dcebdd;border-color:var(--good)}.blank.wrong{background:#f4d9d5;border-color:var(--bad)}.wordbank{margin-top:16px}.wordbank .tile{font-family:"Courier Prime","Courier New",monospace}.set-note{font:700 .8rem "Courier Prime","Courier New",monospace;color:var(--muted)}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:720px){body{font-size:16px}.app{width:100%;margin:0;border-radius:0;min-height:100vh}.mast{padding:19px 18px 12px}.tabs{grid-template-columns:repeat(2,1fr);padding:12px 12px 0}.mode{padding:18px 16px 28px}.mode-head{display:block}.mode-head p{margin-top:5px}.controls{position:sticky;top:0;z-index:9}.seek{order:8;flex-basis:100%}.vocab-grid{grid-template-columns:1fr}.vocab-grid .vh{display:none}.vocab-grid>div{border-bottom:0}.vocab-grid>div:nth-child(5n+1){border-top:1px solid var(--line);font-weight:700;padding-bottom:2px}.vocab-grid>div:nth-child(5n+5){padding-bottom:12px}.practice-tabs{width:100%}.practice-tabs button{flex:1}.mode-head{margin-bottom:12px}.reading{line-height:1.85}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="mast"><div class="fileline">READING DOSSIER · FILE 01</div><h1>How to Have a More Productive Day</h1><div class="rule"></div></header>
+  <nav class="tabs" aria-label="Study modes">
+    <button data-mode="listen" aria-selected="true">01 · LISTEN</button>
+    <button data-mode="explore" aria-selected="false">02 · READ &amp; EXPLORE</button>
+    <button data-mode="bilingual" aria-selected="false">03 · BILINGUAL</button>
+    <button data-mode="practice" aria-selected="false">04 · PRACTICE</button>
+  </nav>
+
+  <section id="listen" class="mode active">
+    <div class="mode-head"><h2>LISTEN &amp; FOLLOW</h2><p>Click a phrase to listen from that point.</p></div>
+    <div class="controls">
+      <button id="playBtn">▶ Play</button><button id="restartBtn">↺ Restart</button>
+      <input id="seek" class="seek" type="range" min="0" max="80.4" step=".01" value="0" aria-label="Audio position">
+      <span class="time" id="time">00:00 / 01:20</span>
+      <label class="toggle">Speed <select id="speed" aria-label="Playback speed"><option>.75×</option><option selected>1×</option><option>1.25×</option><option>1.5×</option></select></label>
+      <label class="toggle"><input id="follow" type="checkbox" checked> Follow text</label>
+      <label class="toggle"><input id="loop" type="checkbox"> Loop reading</label>
+    </div>
+    <div id="audioNote" class="audio-note" aria-live="polite"></div>
+    <article id="listenText" class="reading"></article>
+  </section>
+
+  <section id="explore" class="mode">
+    <div class="mode-head"><h2>READ &amp; EXPLORE</h2><p>Hover or tap a marked expression.</p></div>
+    <article id="exploreText" class="reading"></article>
+    <details class="glossary"><summary>Open vocabulary &amp; collocations (<span id="termCount"></span>)</summary><div id="vocabGrid" class="vocab-grid"></div></details>
+  </section>
+
+  <section id="bilingual" class="mode">
+    <div class="mode-head"><h2>BILINGUAL READING</h2><p>Meaning pairs share the same highlight.</p></div>
+    <div class="bi-tools"><button id="toggleVi" class="small-btn">Hide Vietnamese</button></div>
+    <div id="biText"></div>
+  </section>
+
+  <section id="practice" class="mode">
+    <div class="mode-head"><h2>PRACTICE</h2><p>15 sentence-order tasks + 15 gaps = 30 practice items.</p></div>
+    <div class="practice-top"><div class="practice-tabs"><button data-practice="order" aria-selected="true">Sentence order</button><button data-practice="gaps" aria-selected="false">Full-text gaps</button></div><div id="counter" class="counter">Completed 0 / 30</div></div>
+    <div id="orderPanel" class="practice-panel active"></div>
+    <div id="gapsPanel" class="practice-panel"></div>
+  </section>
+</main>
+
+<div id="popover" class="popover" role="dialog" aria-label="Vocabulary details">
+  <button id="popClose" class="pop-close" aria-label="Close">×</button>
+  <h3 id="popTerm"></h3><div id="popIpa" class="ipa"></div><div id="popVi" class="pop-vi"></div><p id="popEn" class="pop-en"></p>
+  <button id="popListen" class="small-btn">▶ Listen</button>
+</div>
+<audio id="audio" src="./reading.mp3" preload="metadata"></audio>
+
+<script>
+const title={en:"How to Have a More Productive Day",a:.302,b:2.974,t:[.302,.61,.84,1.245,1.57,1.92,2.695,2.974],c:[[0,2],[3,6]]};
+const S=[
+{en:"A productive day doesn’t start by being busy; it starts with a clear purpose.",vi:"Một ngày làm việc hiệu quả không bắt đầu bằng việc bận rộn; nó bắt đầu bằng một mục đích rõ ràng.",a:3.976,b:9.394,t:[3.976,4.28,5.035,5.33,5.695,5.96,6.3,6.64,7.175,7.425,7.82,8.135,8.4,8.72,9.394],c:[[0,2],[3,7],[8,13]],p:["clear purpose","mục đích rõ ràng"]},
+{en:"When you wake up, take a few minutes to plan your day.",vi:"Khi thức dậy, hãy dành vài phút để lên kế hoạch cho ngày của bạn.",a:10.266,b:13.094,t:[10.266,10.485,10.665,10.94,11.22,11.49,11.645,11.865,12.275,12.385,12.71,12.845,13.094],c:[[0,3],[4,7],[8,11]],p:["take a few minutes","dành vài phút"]},
+{en:"Decide what your top three priorities are and focus on completing them.",vi:"Hãy xác định ba ưu tiên hàng đầu của bạn và tập trung hoàn thành chúng.",a:13.672,b:17.828,t:[13.672,14.205,14.415,14.68,14.93,15.22,15.765,16.115,16.38,16.7,16.96,17.555,17.828],c:[[0,5],[6,11]],p:["top three priorities","ba ưu tiên hàng đầu"]},
+{en:"Don’t try to do everything at once.",vi:"Đừng cố làm mọi việc cùng một lúc.",a:18.479,b:21.59,t:[18.479,18.855,19.14,19.47,19.845,20.71,21.055,21.59],c:[[0,3],[4,6]],p:["at once","cùng một lúc"]},
+{en:"Instead, work on one important task at a time with full attention.",vi:"Thay vào đó, hãy làm mỗi lần một nhiệm vụ quan trọng với sự tập trung hoàn toàn.",a:21.914,b:26.025,t:[21.914,22.44,22.71,22.9,23.245,23.9,24.145,24.295,24.61,24.9,25.11,25.425,26.025],c:[[0,3],[4,8],[9,11]],p:["one important task at a time","mỗi lần một nhiệm vụ quan trọng"]},
+{en:"This helps you do better work in less time.",vi:"Điều này giúp bạn làm việc tốt hơn trong thời gian ngắn hơn.",a:26.595,b:29.054,t:[26.595,26.83,27.155,27.35,27.555,28.015,28.2,28.475,28.72,29.054],c:[[0,3],[4,8]],p:["better work in less time","làm việc tốt hơn trong thời gian ngắn hơn"]},
+{en:"Avoid distractions like unnecessary phone use, random scrolling, and negative thoughts.",vi:"Hãy tránh những yếu tố gây xao nhãng như sử dụng điện thoại không cần thiết, lướt nội dung một cách ngẫu nhiên và những suy nghĩ tiêu cực.",a:30.12,b:36.294,t:[30.12,30.645,31.295,31.795,32.68,33.125,33.665,34.135,34.8,35.135,35.85,36.294],c:[[0,2],[3,5],[6,10]],p:["random scrolling","lướt nội dung một cách ngẫu nhiên"]},
+{en:"Create a calm and organized environment that helps you stay focused and motivated.",vi:"Hãy tạo ra một môi trường yên tĩnh và ngăn nắp giúp bạn duy trì sự tập trung và động lực.",a:37.08,b:41.928,t:[37.08,37.47,37.645,37.85,38.205,38.81,39.555,39.72,40.025,40.225,40.525,41.05,41.175,41.928],c:[[0,5],[6,12]],p:["stay focused and motivated","duy trì sự tập trung và động lực"]},
+{en:"Take short breaks to rest your mind, stretch your body, and drink water.",vi:"Hãy nghỉ giải lao ngắn để tâm trí được nghỉ ngơi, duỗi cơ thể và uống nước.",a:42.819,b:47.169,t:[42.819,43.165,43.43,43.85,44.03,44.275,44.635,45.03,45.38,45.64,46.15,46.4,46.765,47.169],c:[[0,6],[7,12]],p:["Take short breaks","Hãy nghỉ giải lao ngắn"]},
+{en:"A fresh mind is more productive.",vi:"Một tâm trí sảng khoái sẽ làm việc hiệu quả hơn.",a:47.677,b:49.81,t:[47.677,47.89,48.16,48.45,48.69,49.085,49.81],c:[[0,2],[3,5]],p:["A fresh mind","Một tâm trí sảng khoái"]},
+{en:"Eat healthy, stay positive, and surround yourself with good habits and supportive people.",vi:"Hãy ăn uống lành mạnh, giữ tinh thần tích cực và để quanh mình là những thói quen tốt cùng những người luôn ủng hộ.",a:50.629,b:55.995,t:[50.629,50.875,51.425,51.735,52.49,52.73,53.185,53.58,53.895,54.17,54.645,54.78,55.53,55.995],c:[[0,3],[4,7],[8,12]],p:["supportive people","những người luôn ủng hộ"]},
+{en:"When you finish an important task, take a moment to be proud of your progress.",vi:"Khi hoàn thành một nhiệm vụ quan trọng, hãy dành một chút thời gian để tự hào về sự tiến bộ của mình.",a:57.018,b:61.145,t:[57.018,57.245,57.51,57.805,58,58.505,58.82,59.115,59.235,59.63,59.855,59.985,60.315,60.535,60.785,61.145],c:[[0,5],[6,9],[10,14]],p:["proud of your progress","tự hào về sự tiến bộ của mình"]},
+{en:"At the end of the day, review what you accomplished and write down a simple plan for tomorrow.",vi:"Vào cuối ngày, hãy xem lại những gì bạn đã hoàn thành và viết ra một kế hoạch đơn giản cho ngày mai.",a:61.808,b:66.797,t:[61.808,62.02,62.27,62.405,62.63,62.865,63.185,63.505,63.725,63.935,64.55,64.765,65.165,65.295,65.505,65.855,66.15,66.295,66.797],c:[[0,5],[6,9],[10,17]],p:["review what you accomplished","xem lại những gì bạn đã hoàn thành"]},
+{en:"Remember, productivity is not about doing more; it’s about doing what matters most with focus, discipline, and purpose.",vi:"Hãy nhớ rằng năng suất không nằm ở việc làm nhiều hơn; mà là làm những điều quan trọng nhất với sự tập trung, kỷ luật và mục đích rõ ràng.",a:67.562,b:75.488,t:[67.562,68.28,69.15,69.395,69.695,70.035,70.435,70.905,71.2,71.57,71.965,72.2,72.72,72.935,73.215,73.82,74.665,74.9,75.488],c:[[0,6],[7,12],[13,17]],p:["what matters most","những điều quan trọng nhất"]},
+{en:"Small steps every day lead to big results in the long run.",vi:"Những bước nhỏ mỗi ngày sẽ dẫn đến kết quả lớn về lâu dài.",a:76.251,b:80.042,t:[76.251,76.56,76.83,77.395,77.62,77.945,78.215,78.465,78.945,79.175,79.48,79.795,80.042],c:[[0,3],[4,7],[8,11]],p:["in the long run","về lâu dài"]}
+];
+const T=[
+{s:0,r:[1,2],x:"productive day",ipa:"/prəˈdʌktɪv deɪ/",vi:"ngày làm việc hiệu quả",en:"a day when useful or important work gets done"},
+{s:0,r:[12,13],x:"clear purpose",ipa:"/klɪr ˈpɝːpəs/",vi:"mục đích rõ ràng",en:"a specific reason or goal that is easy to understand"},
+{s:2,r:[3,5],x:"top three priorities",ipa:"/tɑːp θriː praɪˈɔːrətiz/",vi:"ba ưu tiên hàng đầu",en:"the three tasks or goals that matter most"},
+{s:2,r:[8,10],x:"focus on completing",ipa:"/ˈfoʊkəs ɑːn kəmˈpliːtɪŋ/",vi:"tập trung vào việc hoàn thành",en:"give your attention to finishing something"},
+{s:3,r:[5,6],x:"at once",ipa:"/æt wʌns/",vi:"cùng một lúc",en:"at the same time"},
+{s:4,r:[3,8],x:"one important task at a time",ipa:"/wʌn ɪmˈpɔːrtənt tæsk æt ə taɪm/",vi:"mỗi lần một nhiệm vụ quan trọng",en:"work on a single important task before moving to another"},
+{s:4,r:[10,11],x:"full attention",ipa:"/fʊl əˈtenʃən/",vi:"sự tập trung hoàn toàn",en:"complete concentration on what you are doing"},
+{s:6,r:[1,1],x:"distractions",ipa:"/dɪˈstrækʃənz/",vi:"những yếu tố gây xao nhãng",en:"things that take your attention away"},
+{s:6,r:[3,5],x:"unnecessary phone use",ipa:"/ʌnˈnesəseri foʊn juːs/",vi:"việc dùng điện thoại không cần thiết",en:"using your phone when there is no real need"},
+{s:6,r:[6,7],x:"random scrolling",ipa:"/ˈrændəm ˈskroʊlɪŋ/",vi:"việc lướt nội dung ngẫu nhiên",en:"moving through online content without a clear purpose"},
+{s:6,r:[9,10],x:"negative thoughts",ipa:"/ˈneɡətɪv θɔːts/",vi:"những suy nghĩ tiêu cực",en:"unhelpful or pessimistic ideas"},
+{s:7,r:[4,5],x:"organized environment",ipa:"/ˈɔːrɡənaɪzd ɪnˈvaɪrənmənt/",vi:"môi trường ngăn nắp",en:"a place arranged in a neat and orderly way"},
+{s:7,r:[9,12],x:"stay focused and motivated",ipa:"/steɪ ˈfoʊkəst ænd ˈmoʊtəveɪtɪd/",vi:"duy trì sự tập trung và động lực",en:"continue to concentrate and feel willing to act"},
+{s:8,r:[0,2],x:"take short breaks",ipa:"/teɪk ʃɔːrt breɪks/",vi:"nghỉ giải lao ngắn",en:"stop working briefly so you can rest"},
+{s:9,r:[0,2],x:"a fresh mind",ipa:"/ə freʃ maɪnd/",vi:"một tâm trí sảng khoái",en:"a mind that feels rested and ready to think"},
+{s:10,r:[2,3],x:"stay positive",ipa:"/steɪ ˈpɑːzətɪv/",vi:"giữ tinh thần tích cực",en:"continue to think in a hopeful way"},
+{s:10,r:[5,7],x:"surround yourself with",ipa:"/səˈraʊnd jərˈself wɪð/",vi:"để quanh mình là",en:"choose to have certain people or things around you"},
+{s:10,r:[8,9],x:"good habits",ipa:"/ɡʊd ˈhæbɪts/",vi:"những thói quen tốt",en:"helpful actions that you do regularly"},
+{s:10,r:[11,12],x:"supportive people",ipa:"/səˈpɔːrtɪv ˈpiːpəl/",vi:"những người luôn ủng hộ",en:"people who give help and encouragement"},
+{s:11,r:[11,14],x:"proud of your progress",ipa:"/praʊd əv jər ˈprɑːɡres/",vi:"tự hào về sự tiến bộ của mình",en:"pleased with how much you have improved or achieved"},
+{s:12,r:[9,9],x:"accomplished",ipa:"/əˈkɑːmplɪʃt/",vi:"đã hoàn thành",en:"successfully finished or achieved"},
+{s:13,r:[1,1],x:"productivity",ipa:"/ˌproʊdʌkˈtɪvəti/",vi:"năng suất",en:"the ability to complete useful work efficiently"},
+{s:13,r:[11,12],x:"matters most",ipa:"/ˈmætərz moʊst/",vi:"quan trọng nhất",en:"has the greatest importance"},
+{s:14,r:[8,11],x:"in the long run",ipa:"/ɪn ðə lɔːŋ rʌn/",vi:"về lâu dài",en:"over a long period of time"}
+];
+const G=[
+[{s:0,x:"clear purpose"},{s:2,x:"top three priorities"},{s:4,x:"full attention"},{s:6,x:"random scrolling"},{s:7,x:"organized environment"}],
+[{s:1,x:"wake up"},{s:3,x:"at once"},{s:5,x:"less time"},{s:8,x:"drink water"},{s:9,x:"fresh mind"}],
+[{s:10,x:"supportive people"},{s:11,x:"proud of your progress"},{s:12,x:"simple plan for tomorrow"},{s:13,x:"focus, discipline, and purpose"},{s:14,x:"in the long run"}]
+];
+const gapDistractors=[["negative thoughts","short breaks"],["full attention","good habits"],["top three priorities","random scrolling"]];
+const audio=document.querySelector("#audio"),seek=document.querySelector("#seek"),playBtn=document.querySelector("#playBtn"),note=document.querySelector("#audioNote");
+let clipEnd=null,activeSentence=-9,orderIndex=0,orderChosen=[],orderRevealed=false,gapSet=0,selectedBlank=null;
+const doneOrder=new Set(),doneGaps=new Set();
+const esc=s=>s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=n=>String(Math.floor(n/60)).padStart(2,"0")+":"+String(Math.floor(n%60)).padStart(2,"0");
+function words(o){return o.en.split(" ")}
+function renderTimed(o,sid,isTitle=false){
+ const w=words(o);let out="";
+ o.c.forEach((range,pi)=>{out+=`<span class="phrase" data-start="${o.t[range[0]]}" data-end="${o.t[range[1]+1]}">`;
+  for(let i=range[0];i<=range[1];i++)out+=`<span class="word" data-start="${o.t[i]}" data-end="${o.t[i+1]}" data-sid="${sid}">${esc(w[i])}</span>${i<range[1]?" ":""}`;
+  out+="</span>"+(range[1]<w.length-1?" ":"");
+ });
+ return isTitle?`<h3 class="reading-title sentence" data-sid="${sid}">${out}</h3>`:`<span class="sentence" data-sid="${sid}">${out}</span> `;
+}
+function renderListen(){document.querySelector("#listenText").innerHTML=renderTimed(title,-1,true)+"<p>"+S.map((s,i)=>renderTimed(s,i)).join("")+"</p>"}
+function renderExplore(){
+ let html=`<h3 class="reading-title">${esc(title.en)}</h3><p>`;
+ S.forEach((s,si)=>{const w=words(s),starts=T.filter(t=>t.s===si).sort((a,b)=>a.r[0]-b.r[0]);let i=0;
+  while(i<w.length){const term=starts.find(t=>t.r[0]===i);if(term){let z=w.slice(term.r[0],term.r[1]+1).join(" ");html+=`<button class="term" data-term="${T.indexOf(term)}">${esc(z)}</button>`;i=term.r[1]+1}else{html+=esc(w[i]);i++}if(i<w.length)html+=" "}
+  html+=" ";
+ }); document.querySelector("#exploreText").innerHTML=html+"</p>";
+ document.querySelector("#termCount").textContent=T.length;
+ const headers=["Expression","IPA · US","Nghĩa Việt","English explanation","Audio"];
+ document.querySelector("#vocabGrid").innerHTML=headers.map(x=>`<div class="vh">${x}</div>`).join("")+T.map((t,i)=>`<div>${esc(t.x)}</div><div class="ipa">${esc(t.ipa)}</div><div class="vi">${esc(t.vi)}</div><div>${esc(t.en)}</div><div><button class="small-btn term-audio" data-term="${i}">▶ Listen</button></div>`).join("");
+}
+function markPair(text,needle,key){const i=text.toLowerCase().indexOf(needle.toLowerCase());return i<0?esc(text):esc(text.slice(0,i))+`<span class="pair" data-pair="${key}">${esc(text.slice(i,i+needle.length))}</span>`+esc(text.slice(i+needle.length))}
+function renderBi(){document.querySelector("#biText").innerHTML=S.map((s,i)=>`<article class="bi-row"><div class="bi-en">${markPair(s.en,s.p[0],"p"+i)}</div><div class="bi-vi">${markPair(s.vi,s.p[1],"p"+i)}</div><button class="small-btn listen-sentence" data-sentence="${i}">▶ Listen to sentence</button></article>`).join("")}
+function playClip(a,b){clipEnd=b;audio.currentTime=Math.max(0,a-.035);audio.play().catch(()=>note.textContent="Audio could not start. Press Play once, then try again.")}
+function stopClip(){clipEnd=null}
+audio.addEventListener("loadedmetadata",()=>{seek.max=audio.duration;document.querySelector("#time").textContent="00:00 / "+fmt(audio.duration);note.textContent=""});
+audio.addEventListener("error",()=>note.textContent="Audio unavailable. Upload reading.mp3 in the same folder as index.html.");
+audio.addEventListener("play",()=>playBtn.textContent="❚❚ Pause");audio.addEventListener("pause",()=>playBtn.textContent="▶ Play");
+audio.addEventListener("ended",()=>{if(document.querySelector("#loop").checked){audio.currentTime=0;audio.play()}});
+audio.addEventListener("timeupdate",()=>{
+ if(clipEnd!==null&&audio.currentTime>=clipEnd){audio.pause();clipEnd=null}
+ seek.value=audio.currentTime;document.querySelector("#time").textContent=fmt(audio.currentTime)+" / "+fmt(audio.duration||80.4);
+ document.querySelectorAll("#listenText .word").forEach(el=>el.classList.toggle("active",audio.currentTime>=+el.dataset.start&&audio.currentTime<+el.dataset.end));
+ document.querySelectorAll("#listenText .phrase").forEach(el=>el.classList.toggle("active",audio.currentTime>=+el.dataset.start&&audio.currentTime<+el.dataset.end));
+ const hit=[...document.querySelectorAll("#listenText .sentence")].find(el=>{const ws=el.querySelectorAll(".word");return ws.length&&audio.currentTime>=+ws[0].dataset.start&&audio.currentTime<+ws[ws.length-1].dataset.end});
+ if(hit){const sid=+hit.dataset.sid;if(sid!==activeSentence&&document.querySelector("#follow").checked){activeSentence=sid;const r=hit.getBoundingClientRect();if(r.top<100||r.bottom>innerHeight-80)hit.scrollIntoView({behavior:"smooth",block:"center"})}}
+});
+playBtn.onclick=()=>{stopClip();audio.paused?audio.play():audio.pause()};document.querySelector("#restartBtn").onclick=()=>{stopClip();audio.currentTime=0;audio.play()};
+seek.oninput=()=>{stopClip();audio.currentTime=+seek.value};document.querySelector("#speed").onchange=e=>audio.playbackRate=parseFloat(e.target.value);
+document.querySelector("#listenText").addEventListener("click",e=>{const p=e.target.closest(".phrase");if(p)playClip(+p.dataset.start,+p.dataset.end)});
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{audio.pause();stopClip();document.querySelectorAll(".tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));document.querySelectorAll(".mode").forEach(x=>x.classList.toggle("active",x.id===b.dataset.mode));closePop()});
+const pop=document.querySelector("#popover");let popTerm=null,hoverTimer=null;
+function positionPop(anchor){const r=anchor.getBoundingClientRect(),w=Math.min(380,innerWidth-24);pop.style.width=w+"px";const h=Math.min(pop.scrollHeight||340,innerHeight-24);let left=Math.max(12,Math.min(innerWidth-w-12,r.left+r.width/2-w/2));let top=r.top-h-10;if(top<12)top=Math.min(innerHeight-h-12,r.bottom+10);pop.style.left=left+"px";pop.style.top=Math.max(12,top)+"px"}
+function openPop(i,anchor){clearTimeout(hoverTimer);popTerm=+i;const t=T[popTerm];document.querySelector("#popTerm").textContent=t.x;document.querySelector("#popIpa").textContent="US "+t.ipa;document.querySelector("#popVi").textContent=t.vi;document.querySelector("#popEn").textContent=t.en;pop.classList.add("open");requestAnimationFrame(()=>positionPop(anchor))}
+function closePop(){clearTimeout(hoverTimer);pop.classList.remove("open");popTerm=null}
+document.querySelector("#exploreText").addEventListener("pointerover",e=>{const a=e.target.closest(".term");if(a&&e.pointerType!=="touch")openPop(a.dataset.term,a)});
+document.querySelector("#exploreText").addEventListener("pointerout",e=>{const a=e.target.closest(".term");if(a&&e.pointerType!=="touch")hoverTimer=setTimeout(()=>{if(!pop.matches(":hover"))closePop()},260)});
+document.querySelector("#exploreText").addEventListener("click",e=>{const a=e.target.closest(".term");if(a){e.stopPropagation();openPop(a.dataset.term,a)}});
+pop.addEventListener("pointerenter",()=>clearTimeout(hoverTimer));pop.addEventListener("pointerleave",()=>hoverTimer=setTimeout(closePop,260));
+document.querySelector("#popClose").onclick=closePop;document.addEventListener("keydown",e=>{if(e.key==="Escape")closePop()});document.addEventListener("pointerdown",e=>{if(pop.classList.contains("open")&&!pop.contains(e.target)&&!e.target.closest(".term"))closePop()});
+function termClip(i){const t=T[i],s=S[t.s];playClip(s.t[t.r[0]],s.t[t.r[1]+1])}
+document.querySelector("#popListen").onclick=()=>{if(popTerm!==null)termClip(popTerm)};document.querySelector("#vocabGrid").addEventListener("click",e=>{const b=e.target.closest(".term-audio");if(b)termClip(+b.dataset.term)});
+document.querySelector("#biText").addEventListener("click",e=>{const b=e.target.closest(".listen-sentence");if(b){const s=S[+b.dataset.sentence];playClip(s.a,s.b)}});
+document.querySelector("#biText").addEventListener("pointerover",e=>{const p=e.target.closest(".pair");if(p)document.querySelectorAll(`[data-pair="${p.dataset.pair}"]`).forEach(x=>x.classList.add("on"))});
+document.querySelector("#biText").addEventListener("pointerout",e=>{const p=e.target.closest(".pair");if(p)document.querySelectorAll(`[data-pair="${p.dataset.pair}"]`).forEach(x=>x.classList.remove("on"))});
+let viShown=true;document.querySelector("#toggleVi").onclick=e=>{viShown=!viShown;document.querySelectorAll(".bi-row").forEach(x=>x.classList.toggle("hide-vi",!viShown));e.target.textContent=viShown?"Hide Vietnamese":"Show Vietnamese"};
+function seededShuffle(a,seed){a=[...a];for(let i=a.length-1;i>0;i--){seed=(seed*9301+49297)%233280;const j=Math.floor(seed/233280*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function chunksFor(s){const w=words(s);return s.c.map(r=>w.slice(r[0],r[1]+1).join(" "))}
+function updateCounter(){document.querySelector("#counter").textContent=`Completed ${doneOrder.size+doneGaps.size} / 30`}
+function renderOrder(){
+ const s=S[orderIndex],correct=chunksFor(s),distractor=chunksFor(S[(orderIndex+6)%S.length])[0],choices=seededShuffle([...correct,distractor].map((x,i)=>({x,id:i})),orderIndex+31);
+ const chosenIds=new Set(orderChosen.map(x=>x.id));
+ document.querySelector("#orderPanel").innerHTML=`<div class="card"><div class="eyebrow">TASK ${orderIndex+1} OF 15 · ONE EXTRA TILE</div><div class="hint">${esc(s.vi)}</div><div class="label">YOUR SENTENCE</div><div class="answer-line">${orderChosen.length?orderChosen.map(o=>`<button class="tile chosen" data-id="${o.id}">${esc(o.x)}</button>`).join(""):`<span class="set-note">Choose phrase tiles below.</span>`}</div><div class="label">PHRASE BANK</div><div class="bank">${choices.map(o=>`<button class="tile bank-tile ${chosenIds.has(o.id)?"used":""}" data-id="${o.id}" data-x="${esc(o.x)}" ${chosenIds.has(o.id)?"disabled":""}>${esc(o.x)}</button>`).join("")}</div><div class="actions"><button id="orderBack">← Back</button><button id="orderUndo">Undo</button><button id="orderClear">Clear</button><button id="orderCheck" class="primary">Check</button><button id="orderShow">Show answer</button><button id="orderNext">Next →</button></div><div id="orderFeedback" class="feedback" aria-live="polite"></div></div>`;
+ document.querySelectorAll(".bank-tile").forEach(b=>b.onclick=()=>{orderChosen.push({id:+b.dataset.id,x:b.dataset.x});renderOrder()});
+ document.querySelectorAll(".chosen").forEach((b,i)=>b.onclick=()=>{orderChosen.splice(i,1);renderOrder()});
+ document.querySelector("#orderUndo").onclick=()=>{orderChosen.pop();renderOrder()};document.querySelector("#orderClear").onclick=()=>{orderChosen=[];orderRevealed=false;renderOrder()};
+ document.querySelector("#orderBack").onclick=()=>{orderIndex=(orderIndex+14)%15;orderChosen=[];orderRevealed=false;renderOrder()};document.querySelector("#orderNext").onclick=()=>{orderIndex=(orderIndex+1)%15;orderChosen=[];orderRevealed=false;renderOrder()};
+ document.querySelector("#orderCheck").onclick=()=>{const ok=orderChosen.map(x=>x.x).join(" ")===correct.join(" ");const f=document.querySelector("#orderFeedback");f.className="feedback "+(ok?"good":"bad");f.textContent=ok?"Correct — the sentence is complete.":"Not yet — check the order and remove the extra tile.";if(ok&&!orderRevealed){doneOrder.add(orderIndex);updateCounter()}};
+ document.querySelector("#orderShow").onclick=()=>{orderChosen=correct.map((x,i)=>({x,id:i}));orderRevealed=true;renderOrder();const f=document.querySelector("#orderFeedback");f.className="feedback";f.textContent="Answer shown. Complete it correctly yourself to earn progress."}
+}
+function gapKey(set,i){return set+"-"+i}
+const gapState=G.map(set=>set.map(()=>({v:"",status:"",revealed:false})));
+function replaceGap(text,target,id,state){const i=text.toLowerCase().indexOf(target.toLowerCase());if(i<0)return esc(text);const label=state.v||"__________";return esc(text.slice(0,i))+`<button class="blank ${state.status}" data-blank="${id}">${esc(label)}</button>`+esc(text.slice(i+target.length))}
+function renderGaps(){
+ const set=G[gapSet],bySentence=new Map(set.map((g,i)=>[g.s,{...g,i}]));let article="";
+ S.forEach((s,si)=>{const g=bySentence.get(si);article+=g?replaceGap(s.en,g.x,g.i,gapState[gapSet][g.i]):esc(s.en);article+=" "});
+ const options=seededShuffle([...set.map(x=>x.x),...gapDistractors[gapSet]],101+gapSet);
+ document.querySelector("#gapsPanel").innerHTML=`<div class="card"><div class="setnav">${G.map((_,i)=>`<button class="${i===gapSet?"active":""}" data-set="${i}" aria-label="Gap set ${i+1}">${i+1}</button>`).join("")}</div><div class="eyebrow">SET ${gapSet+1} OF 3 · 5 GAPS</div><div class="gap-text"><p>${article}</p></div><div class="wordbank"><div class="label">WORD BANK · TWO EXTRA OPTIONS</div><div class="bank">${options.map(x=>`<button class="tile gap-option" data-x="${esc(x)}">${esc(x)}</button>`).join("")}</div></div><div class="actions"><button id="gapClear">Clear</button><button id="gapCheck" class="primary">Check</button><button id="gapShow">Show answers</button></div><div id="gapFeedback" class="feedback" aria-live="polite"></div></div>`;
+ document.querySelectorAll("[data-set]").forEach(b=>b.onclick=()=>{gapSet=+b.dataset.set;selectedBlank=null;renderGaps()});
+ document.querySelectorAll(".blank").forEach(b=>b.onclick=()=>{selectedBlank=+b.dataset.blank;document.querySelectorAll(".blank").forEach(x=>x.classList.toggle("selected",x===b))});
+ document.querySelectorAll(".gap-option").forEach(b=>b.onclick=()=>{if(selectedBlank===null){document.querySelector("#gapFeedback").textContent="Select a blank first.";return}const st=gapState[gapSet][selectedBlank];st.v=b.dataset.x;st.status="";renderGaps();const next=gapState[gapSet].findIndex((x,i)=>i>selectedBlank&&!x.v);selectedBlank=next<0?null:next;if(selectedBlank!==null){const el=document.querySelector(`[data-blank="${selectedBlank}"]`);if(el)el.classList.add("selected")}});
+ document.querySelector("#gapClear").onclick=()=>{gapState[gapSet]=set.map(()=>({v:"",status:"",revealed:false}));selectedBlank=null;renderGaps()};
+ document.querySelector("#gapCheck").onclick=()=>{let good=0;set.forEach((g,i)=>{const st=gapState[gapSet][i],ok=st.v.toLowerCase()===g.x.toLowerCase();st.status=ok?"correct":"wrong";if(ok){good++;if(!st.revealed)doneGaps.add(gapKey(gapSet,i))}});renderGaps();const f=document.querySelector("#gapFeedback");f.className="feedback "+(good===5?"good":"bad");f.textContent=good===5?"All five gaps are correct.":`${good} of 5 correct. Review the marked gaps.`;updateCounter()};
+ document.querySelector("#gapShow").onclick=()=>{set.forEach((g,i)=>gapState[gapSet][i]={v:g.x,status:"",revealed:true});selectedBlank=null;renderGaps();document.querySelector("#gapFeedback").textContent="Answers shown. Revealed gaps do not add to progress."}
+}
+document.querySelectorAll(".practice-tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".practice-tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));document.querySelector("#orderPanel").classList.toggle("active",b.dataset.practice==="order");document.querySelector("#gapsPanel").classList.toggle("active",b.dataset.practice==="gaps")});
+renderListen();renderExplore();renderBi();renderOrder();renderGaps();updateCounter();
+</script>
+</body>
+</html>
